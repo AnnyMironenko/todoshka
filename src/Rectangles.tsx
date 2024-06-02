@@ -40,7 +40,7 @@ Matter.Composite.add(engine.world, [
 const defaultStyles = {
   size: two.width * 0.05,
   weight: 400,
-  fill: "white",
+  fill: "black",
   leading: two.width * 0.05 * 0.5,
   family: "Helvetica, Arial, sans-serif",
   alignment: "center",
@@ -89,11 +89,6 @@ function resize() {
   });
 }
 
-const saveToLocalStorage = (data: Matter.Body[]) => {
-  const entLabels = data.map((ent) => ent.label);
-  localStorage.setItem("entLabels", JSON.stringify(entLabels));
-};
-
 function update() {
   const allBodies = Matter.Composite.allBodies(engine.world);
   Matter.MouseConstraint.update(mouse, allBodies);
@@ -131,10 +126,16 @@ interface Todo {
 
 export const Rectangles = () => {
   const [inputValue, setInputValue] = useState("");
-  const [entits, setEntits] = useState<Matter.Body[]>([]);
+  const [todoData, setTodoData] = useState<Matter.Body[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const addNewEntity = (toSave: boolean, textFromMemory?: string) => {
+  const addNewEntity = ({
+    toSave,
+    textFromMemory,
+  }: {
+    toSave: boolean;
+    textFromMemory?: string;
+  }) => {
     const allObjectForGroup = [];
     let x = defaultStyles.margin.left + Math.random() * 1000;
     let y = -two.height;
@@ -203,11 +204,109 @@ export const Rectangles = () => {
     two.add(group);
     Matter.Composite.add(engine.world, [entity]);
 
-    const newEntities = [...entits, entity];
-    setEntits(newEntities);
+    // console.log("before", todoData);
+    // console.log(entity);
+
+    const newTodoData = [...todoData, entity];
+    console.log(newTodoData);
+    setTodoData(newTodoData);
+    // console.log("after", todoData);
 
     if (toSave) {
-      saveToLocalStorage(newEntities);
+      saveToLocalStorage(newTodoData);
+    }
+  };
+
+  const addNewEntities = ({
+    toSave,
+    texts,
+  }: {
+    toSave: boolean;
+    texts?: string[];
+  }) => {
+    let newTodoData = [];
+
+    texts?.forEach((newText) => {
+      const allObjectForGroup = [];
+      let x = defaultStyles.margin.left + Math.random() * 1000;
+      let y = -two.height;
+
+      const word = newText || newCopy;
+      const group = new Two.Group();
+      const text = new Two.Text(word, 0, 0, defaultStyles);
+
+      const rect = text.getBoundingClientRect();
+      rect.height += 30;
+      rect.width += 20;
+
+      let ox = x + rect.width / 2;
+      let oy = y + rect.height / 2;
+
+      if (ox + rect.width >= two.width) {
+        x = defaultStyles.margin.left;
+        y +=
+          defaultStyles.leading +
+          defaultStyles.margin.top +
+          defaultStyles.margin.bottom;
+        ox = x + rect.width / 2;
+        oy = y + rect.height / 2;
+      }
+
+      group.translation.set(ox, oy);
+      text.translation.y = 22;
+
+      const rectangle = new Two.Rectangle(0, 0, rect.width, rect.height);
+      rectangle.fill = getRandomColor();
+      rectangle.noStroke();
+      rectangle.opacity = 1;
+      rectangle.visible = true;
+
+      allObjectForGroup.push(rectangle);
+      if (text.value.length >= 20) {
+        const part1 = text.value.slice(0, 20);
+        const part2 = text.value.slice(20);
+        const text1 = new Two.Text(part1, 0, 0, defaultStyles);
+        const text2 = new Two.Text(
+          part2,
+          0,
+          text1.getBoundingClientRect().height + defaultStyles.leading,
+          defaultStyles
+        );
+        allObjectForGroup.push(text1, text2);
+        rect.height += 360;
+      } else {
+        allObjectForGroup.push(text);
+      }
+
+      const entity = Matter.Bodies.rectangle(ox, oy, 1, 1);
+      Matter.Body.scale(entity, rect.width, rect.height);
+      entity.scale = new Two.Vector(rect.width, rect.height);
+      entity.object = group;
+      entity.label = text.value;
+
+      x += rect.width + defaultStyles.margin.left + defaultStyles.margin.right;
+
+      group.text = text;
+      group.rectangle = rectangle;
+      group.entity = entity;
+      entities.push(entity);
+
+      group.add(...allObjectForGroup);
+      two.add(group);
+      Matter.Composite.add(engine.world, [entity]);
+
+      // console.log("before", todoData);
+      // console.log(entity);
+      newTodoData.push(entity);
+    });
+
+    const dataToSave = [...todoData, ...newTodoData];
+    console.log("dataToSave", dataToSave);
+    setTodoData(dataToSave);
+    // console.log("after", todoData);
+
+    if (toSave) {
+      saveToLocalStorage(dataToSave);
     }
   };
 
@@ -238,9 +337,10 @@ export const Rectangles = () => {
       setTimeout(() => {
         body.position = { x: -100000, y: -100000 };
       }, 100);
-      const newEntits = entits.filter((item) => item !== body);
-      setEntits(newEntits);
+      const newEntits = todoData.filter((item) => item !== body);
+      setTodoData(newEntits);
       saveToLocalStorage(newEntits);
+      console.log(newEntits);
     }
   };
 
@@ -257,16 +357,22 @@ export const Rectangles = () => {
     });
   }, [lastTap]);
 
+  // логика сохранения и загрузки
+  const localStorageID = "your_data";
+
+  const saveToLocalStorage = (data: Matter.Body[]) => {
+    const entLabels = data.map((ent) => ent.label);
+    console.log(data);
+    localStorage.setItem(localStorageID, JSON.stringify(entLabels));
+  };
   useEffect(() => {
     if (initialized) return;
     initialized = true;
 
     const labelsFromMemory = JSON.parse(
-      localStorage.getItem("entLabels") || "[]"
+      localStorage.getItem(localStorageID) || "[]"
     );
-    labelsFromMemory.forEach((label) => {
-      addNewEntity(false, label);
-    });
+    addNewEntities({ toSave: false, texts: labelsFromMemory });
   }, []);
 
   return (
@@ -286,7 +392,7 @@ export const Rectangles = () => {
             onClick={() => {
               if (inputValue === "") return;
               newCopy = inputValue;
-              addNewEntity(true);
+              addNewEntity({ toSave: true });
               setInputValue("");
             }}
           ></button>
