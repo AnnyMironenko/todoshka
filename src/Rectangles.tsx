@@ -75,13 +75,22 @@ function addMouseInteraction() {
 function resize() {
   const { length, thickness } = bounds;
 
-  Matter.Body.setPosition(bounds.left.entity, { x: -thickness / 2, y: two.height / 2 });
-  Matter.Body.setPosition(bounds.right.entity, { x: two.width + thickness / 2, y: two.height / 2 });
-  Matter.Body.setPosition(bounds.bottom.entity, { x: two.width / 2, y: two.height + thickness / 2 });
+  Matter.Body.setPosition(bounds.left.entity, {
+    x: -thickness / 2,
+    y: two.height / 2,
+  });
+  Matter.Body.setPosition(bounds.right.entity, {
+    x: two.width + thickness / 2,
+    y: two.height / 2,
+  });
+  Matter.Body.setPosition(bounds.bottom.entity, {
+    x: two.width / 2,
+    y: two.height + thickness / 2,
+  });
 }
 
 const saveToLocalStorage = (data: Matter.Body[]) => {
-  const entLabels = data.map(ent => ent.label);
+  const entLabels = data.map((ent) => ent.label);
   localStorage.setItem("entLabels", JSON.stringify(entLabels));
 };
 
@@ -91,7 +100,7 @@ function update() {
   Matter.MouseConstraint._triggerEvents(mouse);
 
   Matter.Engine.update(engine);
-  entities.forEach(entity => {
+  entities.forEach((entity) => {
     entity.object.position.copy(entity.position);
     entity.object.rotation = entity.angle;
   });
@@ -101,7 +110,13 @@ function createBoundary(width: number, height: number) {
   const rectangle = two.makeRectangle(0, 0, width, height);
   rectangle.visible = false;
 
-  const entity = Matter.Bodies.rectangle(0, 0, width, height, bounds.properties);
+  const entity = Matter.Bodies.rectangle(
+    0,
+    0,
+    width,
+    height,
+    bounds.properties
+  );
   entity.position = rectangle.position;
   rectangle.entity = entity;
 
@@ -137,7 +152,10 @@ export const Rectangles = () => {
 
     if (ox + rect.width >= two.width) {
       x = defaultStyles.margin.left;
-      y += defaultStyles.leading + defaultStyles.margin.top + defaultStyles.margin.bottom;
+      y +=
+        defaultStyles.leading +
+        defaultStyles.margin.top +
+        defaultStyles.margin.bottom;
       ox = x + rect.width / 2;
       oy = y + rect.height / 2;
     }
@@ -156,7 +174,12 @@ export const Rectangles = () => {
       const part1 = text.value.slice(0, 20);
       const part2 = text.value.slice(20);
       const text1 = new Two.Text(part1, 0, 0, defaultStyles);
-      const text2 = new Two.Text(part2, 0, text1.getBoundingClientRect().height + defaultStyles.leading, defaultStyles);
+      const text2 = new Two.Text(
+        part2,
+        0,
+        text1.getBoundingClientRect().height + defaultStyles.leading,
+        defaultStyles
+      );
       allObjectForGroup.push(text1, text2);
       rect.height += 360;
     } else {
@@ -190,7 +213,10 @@ export const Rectangles = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
         setTimeout(() => {
           inputRef.current?.focus();
         }, 10);
@@ -212,7 +238,7 @@ export const Rectangles = () => {
       setTimeout(() => {
         body.position = { x: -100000, y: -100000 };
       }, 100);
-      const newEntits = entits.filter(item => item !== body);
+      const newEntits = entits.filter((item) => item !== body);
       setEntits(newEntits);
       saveToLocalStorage(newEntits);
     }
@@ -235,19 +261,21 @@ export const Rectangles = () => {
     if (initialized) return;
     initialized = true;
 
-    const labelsFromMemory = JSON.parse(localStorage.getItem("entLabels") || "[]");
-    labelsFromMemory.forEach(label => {
+    const labelsFromMemory = JSON.parse(
+      localStorage.getItem("entLabels") || "[]"
+    );
+    labelsFromMemory.forEach((label) => {
       addNewEntity(false, label);
     });
   }, []);
 
   return (
     <div>
-      <form onSubmit={e => e.preventDefault()}>
+      <form onSubmit={(e) => e.preventDefault()}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <input
             className="input"
-            onChange={e => setInputValue(e.target.value)}
+            onChange={(e) => setInputValue(e.target.value)}
             value={inputValue}
             autoFocus
             ref={inputRef}
