@@ -1,0 +1,54 @@
+#root {
+  margin: 0 auto;
+  width: 100%;
+  padding: 2rem;
+  text-align: center;
+  z-index: 1000;
+}
+
+
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+.knopka {
+  font-size: 60px;
+  background-color: rgba(0, 0, 0, 0);
+  outline: none;
+  border: none;
+  cursor: pointer;
+  
+}
+
+.input {
+  border: 1px solid rgba(0, 0, 0, 0);
+  border-bottom: 0 solid rgba(255, 255, 255, 100); 
+  background-color: rgba(21, 20, 22, 100);
+  outline: none;
+  font-size: 28px;
+  width: 80%;
+  height: 42px;
+  border-radius: 4px;
+  padding-left: 15px;
+  flex: 1;
+
+}
