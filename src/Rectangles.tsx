@@ -2,12 +2,10 @@ import Two from "two.js";
 import Matter from "matter-js";
 import { useEffect, useRef, useState } from "react";
 
-const TOP_CONST = 50;
 let newCopy = "";
 let initialized = false;
 
 const entities: Matter.Body[] = [];
-const vector = new Two.Vector();
 let mouse: Matter.MouseConstraint;
 
 const two = new Two({
