@@ -24,6 +24,7 @@ const bounds = {
     isStatic: true,
   },
 };
+const maxTextInLine = 20;
 
 bounds.left = createBoundary(bounds.thickness, bounds.length);
 bounds.right = createBoundary(bounds.thickness, bounds.length);
@@ -150,8 +151,13 @@ export const Rectangles = () => {
 
       const rect = text.getBoundingClientRect();
 
-      if (text.value.length >= 20) {
-        rect.height += 360;
+      // default padding for text
+      rect.height += 20;
+      rect.width += 20;
+
+      // if text is big we need will do two lines
+      if (text.value.length > maxTextInLine) {
+        rect.height += 150;
       }
 
       let ox = x + rect.width / 2;
@@ -177,9 +183,9 @@ export const Rectangles = () => {
       rectangle.visible = true;
 
       allObjectForGroup.push(rectangle);
-      if (text.value.length >= 20) {
-        const part1 = text.value.slice(0, 20);
-        const part2 = text.value.slice(20);
+      if (text.value.length > maxTextInLine) {
+        const part1 = text.value.slice(0, maxTextInLine);
+        const part2 = text.value.slice(maxTextInLine);
         const text1 = new Two.Text(part1, 0, 0, defaultStyles);
         const text2 = new Two.Text(
           part2,
@@ -188,7 +194,6 @@ export const Rectangles = () => {
           defaultStyles
         );
         allObjectForGroup.push(text1, text2);
-        // rect.height += 360;
       } else {
         allObjectForGroup.push(text);
       }
