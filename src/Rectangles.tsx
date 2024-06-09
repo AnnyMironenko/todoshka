@@ -124,7 +124,7 @@ interface Todo {
 }
 
 export const Rectangles = () => {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState("123456789012345678901");
   const [todoData, setTodoData] = useState<Matter.Body[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -187,8 +187,8 @@ export const Rectangles = () => {
 
       allObjectForGroup.push(rectangle);
       if (text.value.length > maxTextInLine) {
-        const part1 = text.value.slice(0, maxTextInLine);
-        const part2 = text.value.slice(maxTextInLine);
+        const part1 = text.value.slice(0, 10);
+        const part2 = text.value.slice(10);
         const text1 = new Two.Text(part1, 0, 0, defaultStyles);
         const text2 = new Two.Text(
           part2,
