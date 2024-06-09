@@ -129,104 +129,19 @@ export const Rectangles = () => {
   const [todoData, setTodoData] = useState<Matter.Body[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const addNewEntity = ({
+  const addEntities = ({
     toSave,
+    texts,
     textFromMemory,
   }: {
     toSave: boolean;
+    texts?: string[];
     textFromMemory?: string;
   }) => {
-    const allObjectForGroup = [];
-    let x = defaultStyles.margin.left + Math.random() * 1000;
-    let y = -two.height;
-
-    const word = textFromMemory || newCopy;
-    const group = new Two.Group();
-    const text = new Two.Text(word, 0, 0, defaultStyles);
-
-    const rect = text.getBoundingClientRect();
-    rect.height += 30;
-    rect.width += 20;
-
-    let ox = x + rect.width / 2;
-    let oy = y + rect.height / 2;
-
-    if (ox + rect.width >= two.width) {
-      x = defaultStyles.margin.left;
-      y +=
-        defaultStyles.leading +
-        defaultStyles.margin.top +
-        defaultStyles.margin.bottom;
-      ox = x + rect.width / 2;
-      oy = y + rect.height / 2;
-    }
-
-    group.translation.set(ox, oy);
-    text.translation.y = 22;
-
-    const rectangle = new Two.Rectangle(0, 0, rect.width, rect.height);
-    rectangle.fill = getRandomColor();
-    rectangle.noStroke();
-    rectangle.opacity = 1;
-    rectangle.visible = true;
-
-    allObjectForGroup.push(rectangle);
-    if (text.value.length >= 20) {
-      const part1 = text.value.slice(0, 20);
-      const part2 = text.value.slice(20);
-      const text1 = new Two.Text(part1, 0, 0, defaultStyles);
-      const text2 = new Two.Text(
-        part2,
-        0,
-        text1.getBoundingClientRect().height + defaultStyles.leading,
-        defaultStyles
-      );
-      allObjectForGroup.push(text1, text2);
-      rect.height += 360;
-    } else {
-      allObjectForGroup.push(text);
-    }
-
-    const entity = Matter.Bodies.rectangle(ox, oy, 1, 1);
-    Matter.Body.scale(entity, rect.width, rect.height);
-    entity.scale = new Two.Vector(rect.width, rect.height);
-    entity.object = group;
-    entity.label = text.value;
-
-    x += rect.width + defaultStyles.margin.left + defaultStyles.margin.right;
-
-    group.text = text;
-    group.rectangle = rectangle;
-    group.entity = entity;
-    entities.push(entity);
-
-    group.add(...allObjectForGroup);
-    two.add(group);
-    Matter.Composite.add(engine.world, [entity]);
-
-    // console.log("before", todoData);
-    // console.log(entity);
-
-    const newTodoData = [...todoData, entity];
-    console.log(newTodoData);
-    setTodoData(newTodoData);
-    // console.log("after", todoData);
-
-    if (toSave) {
-      saveToLocalStorage(newTodoData);
-    }
-  };
-
-  const addNewEntities = ({
-    toSave,
-    texts,
-  }: {
-    toSave: boolean;
-    texts?: string[];
-  }) => {
+    const textsArray = texts || [textFromMemory || newCopy];
     let newTodoData = [];
 
-    texts?.forEach((newText) => {
+    textsArray.forEach((newText) => {
       const allObjectForGroup = [];
       let x = defaultStyles.margin.left + Math.random() * 1000;
       let y = -two.height;
@@ -295,15 +210,12 @@ export const Rectangles = () => {
       two.add(group);
       Matter.Composite.add(engine.world, [entity]);
 
-      // console.log("before", todoData);
-      // console.log(entity);
       newTodoData.push(entity);
     });
 
     const dataToSave = [...todoData, ...newTodoData];
     console.log("dataToSave", dataToSave);
     setTodoData(dataToSave);
-    // console.log("after", todoData);
 
     if (toSave) {
       saveToLocalStorage(dataToSave);
@@ -372,7 +284,7 @@ export const Rectangles = () => {
     const labelsFromMemory = JSON.parse(
       localStorage.getItem(localStorageID) || "[]"
     );
-    addNewEntities({ toSave: false, texts: labelsFromMemory });
+    addEntities({ toSave: false, texts: labelsFromMemory });
   }, []);
 
   return (
@@ -392,7 +304,7 @@ export const Rectangles = () => {
             onClick={() => {
               if (inputValue === "") return;
               newCopy = inputValue;
-              addNewEntity({ toSave: true });
+              addEntities({ toSave: true, textFromMemory: newCopy });
               setInputValue("");
             }}
           ></button>
