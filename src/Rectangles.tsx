@@ -308,6 +308,7 @@ export const Rectangles = () => {
         <div style={{ display: "flex", alignItems: "center" }}>
           <input
             className="input"
+            type="text"
             onChange={(e) => setInputValue(e.target.value)}
             value={inputValue}
             autoFocus
