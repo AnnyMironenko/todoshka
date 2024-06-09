@@ -42,7 +42,7 @@ const defaultStyles = {
   fill: "black",
   leading: two.width * 0.05 * 0.5,
   family: "Helvetica, Arial, sans-serif",
-  alignment: "center",
+  alignment: "left",
   baseline: "baseline",
   margin: {
     top: 0,
@@ -124,7 +124,7 @@ interface Todo {
 }
 
 export const Rectangles = () => {
-  const [inputValue, setInputValue] = useState("123456789012345678901");
+  const [inputValue, setInputValue] = useState("");
   const [todoData, setTodoData] = useState<Matter.Body[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -166,7 +166,7 @@ export const Rectangles = () => {
         lines = [word];
       }
 
-      const lineHeight = defaultStyles.size * 1;
+      const lineHeight = defaultStyles.size;
       const rectHeight = lineHeight * lines.length + 20;
       const rectWidth =
         Math.max(
@@ -202,7 +202,7 @@ export const Rectangles = () => {
       lines.forEach((line, index) => {
         const text = new Two.Text(
           line,
-          0,
+          -rectWidth / 2,
           index * lineHeight - (rectHeight / 2 - lineHeight / 1),
           defaultStyles
         );
