@@ -237,27 +237,6 @@ export const Rectangles = () => {
     }
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        inputRef.current &&
-        !inputRef.current.contains(event.target as Node)
-      ) {
-        setTimeout(() => {
-          inputRef.current?.focus();
-        }, 10);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("touchstart", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("touchstart", handleClickOutside);
-    };
-  }, []);
-
   const handleDelete = (body: Matter.Body) => {
     if (body) {
       Matter.Composite.remove(engine.world, body);
