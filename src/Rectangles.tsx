@@ -147,69 +147,77 @@ export const Rectangles = () => {
 
       const word = newText || newCopy;
       const group = new Two.Group();
-      const text = new Two.Text(word, 0, 0, defaultStyles);
 
-      const rect = text.getBoundingClientRect();
+      let lines = [];
+      if (word.length > maxTextInLine) {
+        const words = word.split(" ");
+        let currentLine = words[0];
 
-      // default padding for text
-      rect.height += 20;
-      rect.width += 20;
-
-      // if text is big we need will do two lines
-      if (text.value.length > maxTextInLine) {
-        rect.height *= 1.8;
-        rect.width *= 0.55;
+        for (let i = 1; i < words.length; i++) {
+          if (currentLine.length + words[i].length + 1 <= maxTextInLine) {
+            currentLine += " " + words[i];
+          } else {
+            lines.push(currentLine);
+            currentLine = words[i];
+          }
+        }
+        lines.push(currentLine);
       } else {
-        rect.height += 20;
+        lines = [word];
       }
 
-      let ox = x + rect.width / 2;
-      let oy = y + rect.height / 2;
+      const lineHeight = defaultStyles.size * 1;
+      const rectHeight = lineHeight * lines.length + 20;
+      const rectWidth =
+        Math.max(
+          ...lines.map((line) => {
+            const text = new Two.Text(line, 0, 0, defaultStyles);
+            return text.getBoundingClientRect().width;
+          })
+        ) + 20;
 
-      if (ox + rect.width >= two.width) {
+      let ox = x + rectWidth / 2;
+      let oy = y + rectHeight / 2;
+
+      if (ox + rectWidth >= two.width) {
         x = defaultStyles.margin.left;
         y +=
           defaultStyles.leading +
           defaultStyles.margin.top +
           defaultStyles.margin.bottom;
-        ox = x + rect.width / 2;
-        oy = y + rect.height / 2;
+        ox = x + rectWidth / 2;
+        oy = y + rectHeight / 2;
       }
 
       group.translation.set(ox, oy);
-      text.translation.y = 15;
 
-      const rectangle = new Two.Rectangle(0, 0, rect.width, rect.height);
+      const rectangle = new Two.Rectangle(0, 0, rectWidth, rectHeight);
       rectangle.fill = getRandomColor();
       rectangle.noStroke();
       rectangle.opacity = 1;
       rectangle.visible = true;
 
       allObjectForGroup.push(rectangle);
-      if (text.value.length > maxTextInLine) {
-        const part1 = text.value.slice(0, 10);
-        const part2 = text.value.slice(10);
-        const text1 = new Two.Text(part1, 0, 0, defaultStyles);
-        const text2 = new Two.Text(
-          part2,
+
+      lines.forEach((line, index) => {
+        const text = new Two.Text(
+          line,
           0,
-          text1.getBoundingClientRect().height,
+          index * lineHeight - (rectHeight / 2 - lineHeight / 1),
           defaultStyles
         );
-        allObjectForGroup.push(text1, text2);
-      } else {
         allObjectForGroup.push(text);
-      }
+      });
 
       const entity = Matter.Bodies.rectangle(ox, oy, 1, 1);
-      Matter.Body.scale(entity, rect.width, rect.height);
-      entity.scale = new Two.Vector(rect.width, rect.height);
+      Matter.Body.scale(entity, rectWidth, rectHeight);
+      entity.scale = new Two.Vector(rectWidth, rectHeight);
       entity.object = group;
-      entity.label = text.value;
+      entity.label = word;
 
-      x += rect.width + defaultStyles.margin.left + defaultStyles.margin.right;
+      x += rectWidth + defaultStyles.margin.left + defaultStyles.margin.right;
 
-      group.text = text;
+      group.text = lines.join("\n");
       group.rectangle = rectangle;
       group.entity = entity;
       entities.push(entity);
@@ -222,7 +230,6 @@ export const Rectangles = () => {
     });
 
     const dataToSave = [...todoData, ...newTodoData];
-    console.log("dataToSave", dataToSave);
     setTodoData(dataToSave);
 
     if (toSave) {
