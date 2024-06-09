@@ -157,7 +157,8 @@ export const Rectangles = () => {
 
       // if text is big we need will do two lines
       if (text.value.length > maxTextInLine) {
-        rect.height += 150;
+        rect.height *= 1.8;
+        rect.width *= 0.55;
       } else {
         rect.height += 20;
       }
