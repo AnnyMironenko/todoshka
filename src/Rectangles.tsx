@@ -149,8 +149,10 @@ export const Rectangles = () => {
       const text = new Two.Text(word, 0, 0, defaultStyles);
 
       const rect = text.getBoundingClientRect();
-      rect.height += 30;
-      rect.width += 20;
+
+      if (text.value.length >= 20) {
+        rect.height += 360;
+      }
 
       let ox = x + rect.width / 2;
       let oy = y + rect.height / 2;
@@ -186,7 +188,7 @@ export const Rectangles = () => {
           defaultStyles
         );
         allObjectForGroup.push(text1, text2);
-        rect.height += 360;
+        // rect.height += 360;
       } else {
         allObjectForGroup.push(text);
       }
