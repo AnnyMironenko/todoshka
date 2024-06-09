@@ -158,6 +158,8 @@ export const Rectangles = () => {
       // if text is big we need will do two lines
       if (text.value.length > maxTextInLine) {
         rect.height += 150;
+      } else {
+        rect.height += 20;
       }
 
       let ox = x + rect.width / 2;
@@ -174,7 +176,7 @@ export const Rectangles = () => {
       }
 
       group.translation.set(ox, oy);
-      text.translation.y = 22;
+      text.translation.y = 15;
 
       const rectangle = new Two.Rectangle(0, 0, rect.width, rect.height);
       rectangle.fill = getRandomColor();
