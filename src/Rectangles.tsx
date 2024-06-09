@@ -190,7 +190,7 @@ export const Rectangles = () => {
         const text2 = new Two.Text(
           part2,
           0,
-          text1.getBoundingClientRect().height + defaultStyles.leading,
+          text1.getBoundingClientRect().height,
           defaultStyles
         );
         allObjectForGroup.push(text1, text2);
