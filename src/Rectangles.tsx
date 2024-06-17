@@ -72,7 +72,7 @@ function addMouseInteraction() {
 }
 
 function resize() {
-  const { length, thickness } = bounds;
+  const { thickness } = bounds;
 
   Matter.Body.setPosition(bounds.left.entity, {
     x: -thickness / 2,
@@ -111,12 +111,6 @@ function createBoundary(width: number, height: number) {
   rectangle.entity = entity;
 
   return rectangle;
-}
-
-interface Todo {
-  id: number;
-  text: string;
-  done: boolean;
 }
 
 export const Rectangles = () => {
