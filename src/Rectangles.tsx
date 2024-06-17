@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 let newCopy = "";
 let initialized = false;
 
-const entities: Matter.Body[] = [];
+const entities: any[] = [];
 let mouse: Matter.MouseConstraint;
 
 const two = new Two({
@@ -17,7 +17,7 @@ const two = new Two({
 const engine = Matter.Engine.create();
 engine.world.gravity.y = 0.6;
 
-const bounds = {
+const bounds: any = {
   length: 5000,
   thickness: 50,
   properties: {
@@ -89,10 +89,6 @@ function resize() {
 }
 
 function update() {
-  const allBodies = Matter.Composite.allBodies(engine.world);
-  Matter.MouseConstraint.update(mouse, allBodies);
-  Matter.MouseConstraint._triggerEvents(mouse);
-
   Matter.Engine.update(engine);
   entities.forEach((entity) => {
     entity.object.position.copy(entity.position);
