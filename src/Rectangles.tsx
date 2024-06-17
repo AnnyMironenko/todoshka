@@ -108,9 +108,10 @@ function createBoundary(width: number, height: number) {
     bounds.properties
   );
   entity.position = rectangle.position;
-  rectangle.entity = entity;
+  // not sure if this is necessary
+  // rectangle.entity = entity;
 
-  return rectangle;
+  return { entity, ...rectangle };
 }
 
 export const Rectangles = () => {
@@ -128,7 +129,7 @@ export const Rectangles = () => {
     textFromMemory?: string;
   }) => {
     const textsArray = texts || [textFromMemory || newCopy];
-    let newTodoData = [];
+    let newTodoData: any[] = [];
 
     textsArray.forEach((newText) => {
       const allObjectForGroup = [];
@@ -136,7 +137,7 @@ export const Rectangles = () => {
       let y = -two.height;
 
       const word = newText || newCopy;
-      const group = new Two.Group();
+      const group: any = new Two.Group();
 
       let lines = [];
       if (word.length > maxTextInLine) {
@@ -199,7 +200,7 @@ export const Rectangles = () => {
         allObjectForGroup.push(text);
       });
 
-      const entity = Matter.Bodies.rectangle(ox, oy, 1, 1);
+      const entity: any = Matter.Bodies.rectangle(ox, oy, 1, 1);
       Matter.Body.scale(entity, rectWidth, rectHeight);
       entity.scale = new Two.Vector(rectWidth, rectHeight);
       entity.object = group;
