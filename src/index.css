@@ -68,4 +68,14 @@ button:focus-visible {
   .input {
     background-color: #f9f9f9;
   }
+
+
 }
+.todolist{
+  font-size: 28px;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  text-align: left;
+  line-height: 1.2;
+  
+ }

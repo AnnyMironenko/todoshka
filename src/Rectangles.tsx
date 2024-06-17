@@ -1,6 +1,7 @@
 import Two from "two.js";
 import Matter from "matter-js";
 import { useEffect, useRef, useState } from "react";
+import { Todolist } from "./Todolist";
 
 let newCopy = "";
 let initialized = false;
@@ -37,7 +38,7 @@ Matter.Composite.add(engine.world, [
 ]);
 
 const defaultStyles = {
-  size: two.width * 0.05,
+  size: two.width * 0.04,
   weight: 400,
   fill: "black",
   leading: two.width * 0.05 * 0.5,
@@ -296,6 +297,7 @@ export const Rectangles = () => {
           ></button>
         </div>
       </form>
+      {/* <Todolist></Todolist> */}
       <div id="rectangles"></div>
     </div>
   );
